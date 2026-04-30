@@ -20,10 +20,15 @@ It is designed to streamline API validation, improve reliability, and support co
 
 ##  Project Structure
 testing-api-zedu/
+
 ├── tests/            # Test cases for API endpoints
+
 ├── utils/            # Helper modules (e.g., auth.py)
+
 ├── .env.example      # Example environment variables
+
 ├── requirements.txt  # Python dependencies
+
 └── README.md         # Project documentation
 
 Code
