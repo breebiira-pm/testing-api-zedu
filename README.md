@@ -1,14 +1,12 @@
 # Zedu-API-automation
 Python-based API testing project using Pytest and Requests, built to demonstrate engineering discipline and automation maturity for Stage 3 of the QA Engineering Track.
 
----
 
 # Zedu API Automation
 
 This repository contains automated tests and utilities for the **Zedu API**.  
 It is designed to streamline API validation, improve reliability, and support continuous integration workflows.
 
----
 
 ##  Features
 - Automated test cases for core Zedu API endpoints
@@ -16,7 +14,6 @@ It is designed to streamline API validation, improve reliability, and support co
 - Environment configuration via `.env.example`
 - Easy setup with `requirements.txt`
 
----
 
 ##  Project Structure
 testing-api-zedu/
@@ -31,9 +28,7 @@ testing-api-zedu/
 
 └── README.md         # Project documentation
 
-Code
 
----
 
 ##  Setup Instructions
 1. Clone the repository:
