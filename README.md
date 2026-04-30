@@ -10,7 +10,7 @@ It is designed to streamline API validation, improve reliability, and support co
 
 ---
 
-## 🚀 Features
+##  Features
 - Automated test cases for core Zedu API endpoints
 - Utility functions for authentication and request handling
 - Environment configuration via `.env.example`
@@ -18,7 +18,7 @@ It is designed to streamline API validation, improve reliability, and support co
 
 ---
 
-## 📂 Project Structure
+##  Project Structure
 testing-api-zedu/
 ├── tests/            # Test cases for API endpoints
 ├── utils/            # Helper modules (e.g., auth.py)
@@ -30,7 +30,7 @@ Code
 
 ---
 
-## ⚙️ Setup Instructions
+##  Setup Instructions
 1. Clone the repository:
    ```bash
    git clone https://github.com/breebiira-pm/testing-api-zedu.git
@@ -52,12 +52,12 @@ Run tests:
 
 bash
 pytest
-📖 Notes
+ Notes
 Ensure you have Python 3.9+ installed.
 
 Update requirements.txt if you add new dependencies.
 
 Contributions and improvements are welcome!
 
-📝 License
+ License
 This project is licensed under the MIT License.
