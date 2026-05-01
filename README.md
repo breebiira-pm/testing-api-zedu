@@ -1,3 +1,10 @@
+<<<<<<< HEAD
+=======
+# Zedu-API-automation
+Python-based API testing project using Pytest and Requests, built to demonstrate engineering discipline and automation maturity for Stage 3 of the QA Engineering Track.
+
+
+>>>>>>> bf08029d5d9a4c790962a034da30b9318e99cf7b
 # Zedu API Automation
 
 Python-based API test automation project built against the [Zedu platform](https://zedu.chat/) using **Pytest** and **Requests**.
@@ -9,8 +16,8 @@ This project was built for Stage 3 of the QA Engineering Track and demonstrates:
 - Clean separation of login logic, fixtures, and test files
 - Environment variable management via `.env`
 
----
 
+<<<<<<< HEAD
 ## Project Structure
 
 ```
@@ -31,17 +38,47 @@ zedu-api-automation/
 ├── requirements.txt
 └── README.md
 ```
+=======
+##  Features
+- Automated test cases for core Zedu API endpoints
+- Utility functions for authentication and request handling
+- Environment configuration via `.env.example`
+- Easy setup with `requirements.txt`
+>>>>>>> bf08029d5d9a4c790962a034da30b9318e99cf7b
 
----
 
+<<<<<<< HEAD
 ## Prerequisites
 
 - Python **3.9+**
 - pip
+=======
+##  Project Structure
+testing-api-zedu/
 
----
+├── tests/            # Test cases for API endpoints
 
+├── utils/            # Helper modules (e.g., auth.py)
+
+├── .env.example      # Example environment variables
+
+├── requirements.txt  # Python dependencies
+
+└── README.md         # Project documentation
+
+>>>>>>> bf08029d5d9a4c790962a034da30b9318e99cf7b
+
+
+<<<<<<< HEAD
 ## Setup Instructions
+=======
+##  Setup Instructions
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/breebiira-pm/testing-api-zedu.git
+   cd testing-api-zedu
+Create a virtual environment and install dependencies:
+>>>>>>> bf08029d5d9a4c790962a034da30b9318e99cf7b
 
 ### 1. Clone the repository
 ```bash
@@ -86,7 +123,12 @@ TEST_ORG_ID=your_organisation_id_here
 ### Run the full test suite
 ```bash
 pytest
+<<<<<<< HEAD
 ```
+=======
+ Notes
+Ensure you have Python 3.9+ installed.
+>>>>>>> bf08029d5d9a4c790962a034da30b9318e99cf7b
 
 ### Run with verbose output
 ```bash
@@ -101,6 +143,7 @@ pytest tests/test_channels.py -v
 pytest tests/test_health.py -v
 ```
 
+<<<<<<< HEAD
 ### Generate an HTML report
 ```bash
 pytest --html=reports/report.html --self-contained-html
@@ -136,3 +179,7 @@ pytest --html=reports/report.html --self-contained-html
 | `TEST_EMAIL` | Registered Zedu account email |
 | `TEST_PASSWORD` | Registered Zedu account password |
 | `TEST_ORG_ID` | Your organisation's ID in Zedu |
+=======
+ License
+This project is licensed under the MIT License.
+>>>>>>> bf08029d5d9a4c790962a034da30b9318e99cf7b
