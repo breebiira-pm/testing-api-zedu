@@ -1,0 +1,26 @@
+# Environment — NEVER commit this
+.env
+.env.*
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+
+# Virtual environment
+venv/
+.venv/
+env/
+
+# Test reports
+reports/
+*.html
+
+# IDE
+.vscode/
+.idea/
+.DS_Store
