@@ -12,52 +12,82 @@ ORG_SLUG = os.getenv("TEST_ORG_ID", "zedu-test-organisation")
 
 def login_and_activate_session():
     """
-    Login and then switch into the organisation to get a valid session token.
-    Zedu requires switching org after login to activate the session.
+    Login and activate session by switching into the organisation.
+    Zedu requires an org switch after login to activate the session token.
     """
     # Step 1: Login
-    login_url = f"{BASE_URL}/auth/login"
-    payload = {
-        "email": os.getenv("TEST_EMAIL"),
-        "password": os.getenv("TEST_PASSWORD"),
-    }
-    response = requests.post(login_url, json=payload)
-    response.raise_for_status()
-    data = response.json()
+    login_response = requests.post(
+        f"{BASE_URL}/auth/login",
+        json={
+            "email": os.getenv("TEST_EMAIL"),
+            "password": os.getenv("TEST_PASSWORD"),
+        }
+    )
+    login_response.raise_for_status()
+    login_data = login_response.json()
 
+    # Extract token from login response
     token = (
-        data.get("data", {}).get("access_token")
-        or data.get("access_token")
-        or data.get("token")
-        or data.get("data", {}).get("token")
+        login_data.get("data", {}).get("access_token")
+        or login_data.get("access_token")
+        or login_data.get("token")
+        or login_data.get("data", {}).get("token")
     )
     if not token:
-        raise ValueError(f"Could not extract token from login response: {data}")
+        raise ValueError(f"No token in login response: {login_data}")
 
     headers = {
         "Authorization": f"Bearer {token}",
         "Content-Type": "application/json"
     }
 
-    # Step 2: Switch into the organisation using slug to activate session
-    switch_url = f"{BASE_URL}/users/switch-org/{ORG_SLUG}"
-    switch_response = requests.get(switch_url, headers=headers)
-
-    # If switch gives us a new token, use that
-    if switch_response.status_code == 200:
-        switch_data = switch_response.json()
-        new_token = (
-            switch_data.get("data", {}).get("access_token")
-            or switch_data.get("access_token")
-            or switch_data.get("data", {}).get("token")
-            or switch_data.get("token")
+    # Step 2: Try to switch org using slug to activate the session
+    try:
+        switch_response = requests.get(
+            f"{BASE_URL}/users/switch-org/{ORG_SLUG}",
+            headers=headers
         )
-        if new_token:
-            token = new_token
-            headers = {
-                "Authorization": f"Bearer {token}",
-                "Content-Type": "application/json"
-            }
+        if switch_response.status_code == 200:
+            switch_data = switch_response.json()
+            # Try to get a new token from the switch response
+            new_token = (
+                switch_data.get("data", {}).get("access_token")
+                or switch_data.get("access_token")
+                or switch_data.get("data", {}).get("token")
+                or switch_data.get("token")
+            )
+            if new_token:
+                token = new_token
+                headers = {
+                    "Authorization": f"Bearer {token}",
+                    "Content-Type": "application/json"
+                }
+    except Exception:
+        pass  # If switch fails, continue with original token
+
+    # Step 3: Try switch-org using PUT /users/switch-org with body
+    try:
+        switch_response2 = requests.put(
+            f"{BASE_URL}/users/switch-org",
+            headers=headers,
+            json={"organisation_id": ORG_SLUG}
+        )
+        if switch_response2.status_code == 200:
+            switch_data2 = switch_response2.json()
+            new_token2 = (
+                switch_data2.get("data", {}).get("access_token")
+                or switch_data2.get("access_token")
+                or switch_data2.get("data", {}).get("token")
+                or switch_data2.get("token")
+            )
+            if new_token2:
+                token = new_token2
+                headers = {
+                    "Authorization": f"Bearer {token}",
+                    "Content-Type": "application/json"
+                }
+    except Exception:
+        pass
 
     return token, headers
 
@@ -87,15 +117,21 @@ def auth_headers():
 @pytest.fixture(scope="session")
 def org_id(auth_headers):
     """Get the real org UUID from the organisations list."""
-    response = requests.get(f"{BASE_URL}/users/organisations", headers=auth_headers)
-    if response.status_code == 200:
-        data = response.json()
-        orgs = data.get("data") or data
-        if isinstance(orgs, list) and len(orgs) > 0:
-            org = orgs[0]
-            oid = org.get("id") or org.get("_id") or org.get("organisation_id")
-            if oid:
-                return oid
+    try:
+        response = requests.get(
+            f"{BASE_URL}/users/organisations",
+            headers=auth_headers
+        )
+        if response.status_code == 200:
+            data = response.json()
+            orgs = data.get("data") or data
+            if isinstance(orgs, list) and len(orgs) > 0:
+                org = orgs[0]
+                oid = org.get("id") or org.get("_id") or org.get("organisation_id")
+                if oid:
+                    return oid
+    except Exception:
+        pass
     return ORG_SLUG
 
 
