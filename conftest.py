@@ -8,14 +8,13 @@ load_dotenv()
 
 BASE_URL = os.getenv("BASE_URL", "https://api.zedu.chat/api/v1")
 ORG_SLUG = os.getenv("TEST_ORG_ID", "zedu-test-organisation")
+ORG_ID = "019de302-9c35-7a83-9c72-177d901cd4c1"
 
 
-def login_and_activate_session():
+def get_fresh_headers():
     """
-    Two-step Zedu authentication:
-    1. POST /auth/login — returns initial token
-    2. GET /users/switch-org/{slug} — returns activated session token
-    The second token is what works for all protected endpoints.
+    Get fresh authenticated headers every time.
+    Zedu tokens expire quickly so we refresh per test class.
     """
     # Step 1: Login
     login_response = requests.post(
@@ -26,34 +25,23 @@ def login_and_activate_session():
         }
     )
     login_response.raise_for_status()
-    login_data = login_response.json()
-
-    # Token is inside data.access_token
-    token = login_data["data"]["access_token"]
-
-    if not token:
-        raise ValueError(f"No token in login response: {login_data}")
+    token = login_response.json()["data"]["access_token"]
 
     headers = {
         "Authorization": f"Bearer {token}",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "org-id": ORG_ID,
     }
 
-    # Step 2: Switch org to get activated session token
+    # Step 2: Switch org to activate session
     switch_response = requests.get(
         f"{BASE_URL}/users/switch-org/{ORG_SLUG}",
         headers=headers
     )
-
     if switch_response.status_code == 200:
-        switch_data = switch_response.json()
-        # New activated token is inside data.access_token
-        activated_token = switch_data["data"]["access_token"]
+        activated_token = switch_response.json()["data"]["access_token"]
         if activated_token:
-            headers = {
-                "Authorization": f"Bearer {activated_token}",
-                "Content-Type": "application/json"
-            }
+            headers["Authorization"] = f"Bearer {activated_token}"
 
     return headers
 
@@ -69,18 +57,19 @@ def org_slug():
 
 
 @pytest.fixture(scope="session")
+def org_id():
+    return ORG_ID
+
+
+# Use "module" scope so token refreshes per test file
+@pytest.fixture(scope="module")
 def auth_headers():
-    return login_and_activate_session()
+    return get_fresh_headers()
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def auth_token(auth_headers):
     return auth_headers["Authorization"].replace("Bearer ", "")
-
-
-@pytest.fixture(scope="session")
-def org_id():
-    return "019de302-9c35-7a83-9c72-177d901cd4c1"
 
 
 @pytest.fixture
